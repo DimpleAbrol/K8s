@@ -1,0 +1,98 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ COMMANDS +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+kubectl cluster-info  --> Check K8s cluster information
+========================================================================================================
+kubectl get nodes  --> Check nodes 
+output :-
+NAME    STATUS   ROLES           AGE     VERSION
+node1   Ready    control-plane   21m     v1.27.2
+node2   Ready    <none>          4m49s   v1.27.2
+========================================================================================================
+EXAMPLE OF LABELS -->
+Creating POD giving label and in specification creating container inside pod :=
+
+vi pod1.yml  -->create file
+kind: Pod
+apiVersion: v1
+metadata:
+  name: delhipod
+  labels:                                                   
+    env: development
+    class: pods
+spec:
+    containers:
+       - name: c00
+         image: ubuntu
+         command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+========================================================================================================
+kubectl apply -f pod1.yml --> to apply all the changes in above yml file
+========================================================================================================
+kubectl get pods -o wide  --> check running pods with information, to check ip of pods
+NAME       READY   STATUS    RESTARTS   AGE     IP         NODE    NOMINATED NODE   READINESS GATES
+delhipod   1/1     Running   0          2m38s   10.5.1.2   node2   <none>           <none>
+========================================================================================================
+kubectl get pods --show-labels  --> to see labels of pod
+NAME       READY   STATUS    RESTARTS   AGE     LABELS
+delhipod   1/1     Running   0          5m12s   class=pods,env=development
+========================================================================================================
+kubectl label pods delhipod dev=dev1  --> To give direct label to any pod
+pod/delhipod labeled
+========================================================================================================
+kubectl get pods -l env=development  --> find port with label
+NAME       READY   STATUS    RESTARTS   AGE
+delhipod   1/1     Running   0          12m
+========================================================================================================
+kubectl get pods -l env!=development  --> find pod where label is not developmet 
+No resources found in default namespace.
+========================================================================================================
+kubectl delete pod --> to delete pod
+========================================================================================================
+Node Selector --
+
+vi pod2.yml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nodelabels
+  labels:
+    env: development
+spec:
+    containers:
+       - name: c00
+         image: ubuntu
+         command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+    nodeSelector:                                         
+       hardware: t2-medium
+
+kubectl label nodes node2 hardware=t2-medium  -- give label to node (node selector)
+node/node2 labeled
+========================================================================================================
+EXAMPLE OF REPLICATION CONTROLLER
+
+vi pode3.yml
+kind: ReplicationController               
+apiVersion: v1
+metadata:
+  name: myreplica
+spec:
+  replicas: 2            
+  selector:        
+    myname: dimple                              
+  template:                
+    metadata:
+      name: testpod6
+      labels:            
+        myname: dimple
+    spec:
+     containers:
+       - name: c00
+         image: ubuntu
+         command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+
+kubectl apply -f pode3.yml  --- apply changes
+kubectl get rc  -- to see all replica controllers
+kubectl describe rc myreplica <name of replica controller>  - description of replica
+kubectl get pods --- here we see all the replica pods created 
+========================================================================================================
+
+
