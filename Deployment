@@ -19,3 +19,19 @@ spec:
           command: ["/bin/bash", "-c", "while true; do echo Technical-Guftgu; sleep 5; done"]
 
 kubectl apply -f deployment.yml
+
+
+====================================================================================================================================
+Deployment commands:-
+
+kubectl get deploy  --> to check the deployment was create or not
+kubectl describe deploy mydeployment  --> to check how deployment create RS and pods
+                 <type> <name of object>
+kubectl get rs  
+kubectl scale --replica=1 deploy mydeployment  --> to scale up and scale down
+
+kubectl logs -f <podename>  --> to check waht is running inside container
+kubectl rollout status deployment mydeployments  --> status of rollout
+kubectl rollout history deployment deployments  -->to check how many versions present
+kubectl rollback undo deployment/mydeployments  --> to go back on previous version
+
