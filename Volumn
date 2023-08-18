@@ -1,0 +1,53 @@
+vi emptydir.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myvolemptydir     # name of pod
+spec:
+  containers:
+  - name: c1                              # container 1
+    image: centos
+    command: ["/bin/bash", "-c", "sleep 15000"]
+    volumeMounts:                                    # Mount definition inside the container
+      - name: xchange                                 # name of volumn
+        mountPath: "/tmp/xchange"          
+  - name: c2                           # container 2
+    image: centos
+    command: ["/bin/bash", "-c", "sleep 10000"]
+    volumeMounts:
+      - name: xchange
+        mountPath: "/tmp/data"
+  volumes:                                                   
+  - name: xchange
+    emptyDir: {}  
+
+kubectl apply -f emptydir.yml
+
+go inside container -->
+kubectl exec myvolemptydir -c c1 -it -- /bin/bash
+        <execte> <name of pod>  <container> <nameofcontainer> <iterative terminal> 
+
+
+HOST PATH
+========================
+Mount the volumn of pod with host directory
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myvolhostpath
+spec:
+  containers:                     #container inside pod
+  - image: centos
+    name: testc                   # name of container
+    command: ["/bin/bash", "-c", "sleep 15000"]
+    volumeMounts:                 # mount
+    - mountPath: /tmp/hostpath                  # mount the volumn with host path         
+      name: testvolume
+  volumes:
+  - name: testvolume            # name of volumn
+    hostPath:
+      path: /tmp/data              # folder in host machine
+
+
